@@ -1,0 +1,53 @@
+# name: Yitian Zhou
+# student_ID: 518030910237
+    .pos 0
+    irmovq stack,%rsp
+    call main 
+    halt
+
+
+    .align 8
+# Source block
+src:
+    .quad 0x00a
+    .quad 0x0b0
+    .quad 0xc00
+# Destination block
+dest:
+    .quad 0x111
+    .quad 0x222
+    .quad 0x333
+
+
+main:
+    irmovq src,%rdi
+    irmovq dest,%rsi
+    irmovq $3,%rdx
+    call copy_block
+    ret
+
+
+copy_block:
+    irmovq $0,%rax
+    irmovq $0,%r8
+    irmovq $1,%r9           #r9 is used to be subed by length
+    irmovq $8,%r10          #used to increase src and dest
+L2: 
+    subq %r8,%rdx
+    je L1
+
+    mrmovq (%rdi),%r11        #(%r11)=value
+    addq %r10,%rdi
+    rmmovq %r11,(%rsi)
+    addq %r10,%rsi
+    xorq %r11,%rax
+    subq %r9,%rdx
+    jmp L2
+L1: 
+    ret
+
+
+
+
+    .pos 0x200
+stack:
